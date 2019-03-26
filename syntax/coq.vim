@@ -36,13 +36,13 @@ endif
 " Coq is case sensitive.
 syn case match
 
-syn cluster coqVernac contains=coqRequire,coqCheck,coqEval,coqNotation,coqTacNotation,coqDecl,coqThm,coqLtacDecl,coqDef,coqFix,coqInd,coqRec,coqShow
+syn cluster coqVernac contains=coqRequire,coqCheck,coqEval,coqNotation,coqTacNotation,coqDecl,coqThm,coqLtacDecl,coqDef,coqFix,coqInd,coqRec,coqShow,coqModule
 
 " Various
 syn match   coqError             "\S\+"
 syn match   coqVernacPunctuation ":=\|\.\|:"
 syn match   coqIdent             contained "[_[:alpha:]][_'[:alnum:]]*"
-syn keyword coqTopLevel          Declare Module Type Canonical Structure Cd Coercion Derive Drop Existential
+syn keyword coqTopLevel          Declare Type Canonical Structure Cd Coercion Derive Drop Existential
 "...
 syn keyword coqVernacCmd         Functional Scheme Back Combined
 syn keyword coqFeedback          Show About Print
@@ -56,7 +56,7 @@ syn keyword coqKwd             contained else end exists2 fix forall fun if in s
 syn match   coqKwd             contained "\<where\>"
 syn match   coqKwd             contained "\<exists!\?"
 syn match   coqKwd             contained "|\|/\\\|\\/\|<->\|\~\|->\|=>\|{\|}\|&\|+\|-\|*\|=\|>\|<\|<="
-syn match coqTermPunctuation   contained ":=\|:>\|:\|;\|,\|||\|\[\|\]\|@\|?\|\<_\>"
+syn match coqTermPunctuation   contained ":=\|:>\|<:\|:\|;\|,\|||\|\[\|\]\|@\|?\|\<_\>"
 
 " Various
 syn region coqRequire contains=coqString matchgroup=coqVernacCmd start="\<Require\>\%(\_s\+\%(Export\|Import\)\>\)\?" matchgroup=coqVernacPunctuation end="\.\_s"
@@ -283,6 +283,15 @@ syn region coqRecStart   contained contains=coqRecField,@coqTerm start="{" match
 syn region coqRecField   contained contains=coqField matchgroup=coqVernacPunctuation start="{" end=":"
 syn region coqRecField   contained contains=coqField matchgroup=coqVernacPunctuation start=";" end=":"
 syn match coqField       contained "[_[:alpha:]][_'[:alnum:]]*"
+
+" Modules
+syn region coqModule         contains=coqModuleName matchgroup=coqVernacPunctuation start="\<Module\( Type\)\?\>" end="\.\_s" keepend
+syn region coqModuleName     contained contains=coqModuleTypeSat,coqModuleDef matchgroup=coqIdent start="[_[:alpha:]][_'[:alnum:]]*" end="\.\_s"
+syn region coqModuleDef      contained contains=@coqTerm matchgroup=coqVernacPunctuation start=":=" matchgroup=coqVernacPunctuation end="\.\_s"
+syn region coqModuleTypeSat  contained contains=@coqTerm matchgroup=coqVernacPunctuation start="<:" matchgroup=coqVernacPunctuation end="\.\_s"
+"syn region coqModuleContent  contains=@coqVernac,coqModuleEnder matchgroup=coqVernacPunctuation start="\.\_s"  matchgroup=coqProofDelim end="\<End\_s\+\z1\_s*\.\_s"
+" TODO: make contained in coqModule
+syn region coqModuleEnder    contains=coqIdent matchgroup=coqProofDelim start="\<End\>" matchgroup=coqVernacPunctuation end="\.\_s"
 
 " Various (High priority)
 syn region  coqComment           containedin=ALL contains=coqComment,coqTodo start="(\*" end="\*)" extend keepend
